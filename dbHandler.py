@@ -8,7 +8,7 @@ class DBManager:
     def __init__(self):
         try:
             connection = sqlite3.connect(os.getenv('DATABASE_NAME'))
-            print('Connected')
+            print('Connected to database')
             self.con = connection
         except:
             print('Error connecting to the database')
@@ -21,6 +21,14 @@ class DBManager:
     def NewAutoMessage(self, trigger, response):
         if not self.GetAutoMessageResponse(trigger):
             self.builder.execute("INSERT INTO automessages VALUES('"+trigger+"','"+response+"')")
+            self.con.commit()  
+            return True
+        else:
+            return False
+
+    def DeleteAutoMessage(self, trigger):
+        if self.GetAutoMessageResponse(trigger):
+            self.builder.execute('DELETE FROM automessages WHERE trigger="'+trigger+'"')
             self.con.commit()  
             return True
         else:

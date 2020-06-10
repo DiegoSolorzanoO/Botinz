@@ -13,3 +13,15 @@ class CManager:
                 await message.channel.send('Trigger already used')
         else:
             await message.channel.send('Wrong command usage. //add//<trigger>//<response>')
+
+    async def rm(self, message, args):
+        if not message.channel.permissions_for(message.author).administrator:
+            await message.channel.send('You do not have permission for that')
+        else:
+            if len(args) == 3:
+                if self.dbManager.DeleteAutoMessage(args[2]):
+                    await message.channel.send('Trigger deleted')
+                else:
+                    await message.channel.send('Trigger does not exist')
+            else:
+                await message.channel.send('Wrong command usage. //rm//<trigger>')
