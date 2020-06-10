@@ -1,23 +1,40 @@
 import discord
 import os
 from dbHandler import DBManager
+from cManager import CManager
 
 from dotenv import load_dotenv
 load_dotenv()
 
 dbManager = DBManager()
 
+cManager = CManager(dbManager)
+
 dbManager.CreateTable()
 
-class MyClient(discord.Client):
-    async def on_ready(self):
-        print('Logged on as {0}!'.format(self.user))
-        channel = self.get_channel(521407366214713368)
-        await channel.send('Hello there, general kenobi')
+client = discord.Client()
 
-    async def on_message(self, message):
-        print('Message from {0.author}: {0.content}'.format(message))
+@client.event
+async def on_ready():
+    print('We have logged in as {0.user}'.format(client))
 
-client = MyClient()
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return
+
+    triggered = dbManager.GetAutoMessageResponse(message.content)
+    if triggered:
+        await message.channel.send(triggered)
+
+    args = message.content.split("//")
+    if len(args) > 1:
+        command = args[1]
+        if len(args) > 2:
+            if command == 'add':
+                await cManager.add(message,args)
+        else:
+            if command == 'ping':
+                await message.channel.send('PONG!')
 
 client.run(os.getenv('DISCORD_TOKEN'))
