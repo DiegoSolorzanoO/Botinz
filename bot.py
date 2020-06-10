@@ -38,8 +38,14 @@ async def on_message(message):
                 return
             if command == 'rm':
                 await cManager.rm(message, args)
+                return
         else:
             if command == 'ping':
                 await message.channel.send('PONG!')
+                return
+            if command == 'reset':
+                await cManager.reset(message, args)
+                return
+            
 
 client.run(os.getenv('DISCORD_TOKEN'))

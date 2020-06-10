@@ -25,3 +25,10 @@ class CManager:
                     await message.channel.send('Trigger does not exist')
             else:
                 await message.channel.send('Wrong command usage. //rm//<trigger>')
+
+    async def reset(self, message, args):
+        if not message.channel.permissions_for(message.author).administrator:
+            await message.channel.send('You do not have permission for that')
+        else:
+            self.dbManager.ResetDatabase()
+            await message.channel.send('Database was reset')

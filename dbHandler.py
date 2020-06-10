@@ -17,6 +17,7 @@ class DBManager:
 
     def CreateTable(self):
         self.builder.execute("CREATE TABLE IF NOT EXISTS automessages(trigger text PRIMARY KEY, response text)")
+        self.con.commit()
 
     def NewAutoMessage(self, trigger, response):
         if not self.GetAutoMessageResponse(trigger):
@@ -41,3 +42,9 @@ class DBManager:
             return False
         else:
             return rows[0][1]
+
+    def ResetDatabase(self):
+        self.builder.execute('DROP TABLE IF EXISTS automessages')
+        self.con.commit()
+        self.CreateTable()
+        return
